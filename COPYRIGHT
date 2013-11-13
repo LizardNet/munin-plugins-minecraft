@@ -1,0 +1,23 @@
+LIZARDNET FASTLIZARD4/MUNIN-PLUGINS/MINECRAFT <https://fastlizard4.org/wiki/Download:Minecraft_Munin_plugins>
+by FastLizard4 and the LizardNet Munin Plugins Development Team <https://gerrit.fastlizard4.org/r/#/admin/groups/17,members>
+
+Copyright (C) 2013 by FastLizard4 and the LizardNet Munin Plugins Development Team.  Some rights reserved.
+
+License GPLv3+: GNU General Public License version 3 or later (at your choice): <http://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it at your will provided that your redistribution,
+with or without modifications, is also licensed under the GNU GPL.
+
+There is NO WARRANTY FOR THIS SOFTWARE to the extent permitted by law.
+
+This is an open source project.  The source Git repositories, which you are welcome to contribute to, can be
+found here: <https://gerrit.fastlizard4.org/r/gitweb?p=munin-plugins/minecraft.git;a=summary>
+
+Gerrit Code Review for the project: <https://gerrit.fastlizard4.org/r/#/q/project:munin-plugins/minecraft,n,z>
+
+== ACKNOWLEDGEMENTS ==
+GITHUB IVKOS/MINECRAFT-QUERY-FOR-PHP <https://github.com/ivkos/Minecraft-Query-for-PHP>
+
+This class was originally written by xPaw. Modifications and additions by ivkos.
+
+This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+To view a copy of this license, visit <http://creativecommons.org/licenses/by-nc-sa/3.0/>

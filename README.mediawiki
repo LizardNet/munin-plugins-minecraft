@@ -1,0 +1,190 @@
+<!--
+
+ATTENTION: This is a raw wikimarkup copy of the "live" README on LizardWiki at <https://fastlizard4.org/wiki/Download:Minecraft_Munin_plugins>
+
+This copy may not be up to date, so if at all possible please refer to the LizardWiki version linked to above!
+
+For copyright information, please open the COPYRIGHT file.
+
+-->
+
+'''LIZARDNET FASTLIZARD4/MUNIN-PLUGINS/MINECRAFT - A set of RRDTool/Munin plugins written in PHP to graph various statistics regarding a Minecraft server.'''
+
+__TOC__
+
+== Git Download and Source Code ==
+*[https://git.fastlizard4.org/gitblit/summary/?r=munin-plugins/minecraft.git Repository summary]
+*[https://git.fastlizard4.org/gitblit/tree/?r=munin-plugins/minecraft.git Source tree]
+*[https://git.fastlizard4.org/gitblit/tags/?r=munin-plugins/minecraft.git Tagged releases]
+*[https://gerrit.fastlizard4.org/r/#/q/project:munin-plugins/minecraft,n,z ''Commits awaiting code review (pull requests)'']
+*[https://ridley.fastlizard4.org/bugzilla/buglist.cgi?product=munin-plugins%2Fminecraft&component=%28not%20applicable%29&resolution=---&list_id=6 ''Currently open bug reports'']
+
+== Information ==
+This is a set of plugins that can be used in tandem with Munin (or RRDTool) to graph various aspects of a Minecraft server, including:
+*Loaded chunks (overworld, Nether, and The End) (minecraft_chunks.php)
+*Loaded entities (overworld, Nether, and The End) (minecraft_entities.php)
+*Free JVM memory (minecraft_memory.php)
+*Lag (ticks per second) (minecraft_lag.php)
+*Logged in users (minecraft_users.php)
+
+=== Prerequisites ===
+The following prerequisites must be satisfied for using any of the plugins provided here, unless otherwise noted:
+*PHP 5.0 or above
+*Minecraft server 1.0 or later
+*''For minecraft_chunks.php, minecraft_entities.php, minecraft_lag.php, and minecraft_memory.php'': [http://bukkit.org CraftBukkit] version 1.0 or later '''and''' the [http://dev.bukkit.org/bukkit-plugins/lagmeter/ LagMeter plugin] for CraftBukkit
+*RCON must be enabled in your Minecraft server configuration (instructions for doing this below)
+
+== Downloading ==
+These plugins can be found on the LizardNet Git repositories.  Run:
+
+<syntaxhighlight lang="bash">
+$ git clone https://gerrit.fastlizard4.org/r/p/munin-plugins/minecraft.git
+</syntaxhighlight>
+
+To automatically clone the Git repository to your computer.  For the rest of these instructions, we'll assume that you've cloned this repository into the folder <code>/home/''username''/munin-plugins</code>, so that your local repository root is <code>/home/''username''/munin-plugins/minecraft</code>.
+
+== Installation ==
+=== Enabling Minecraft RCON ===
+Minecraft uses the Source RCON protocol for administrative communication, and these plugins leverage that functionality.  You'll have to enable RCON for each Minecraft server you want to monitor:
+
+*Open the server's ''server.properties'' file, and append the following to the bottom of it:
+
+    enable-rcon=true
+    rcon.port='''''portnumber'''''
+    rcon.password='''''password'''''
+
+*Remember to assign an unused ''portnumber'' and a random/secure ''password''.  Note these for configuring the plugin later.
+*'''Restart''' the Minecraft server.  You should see messages like this when the server is done loading:
+
+    [INFO] Starting remote control listener
+    [INFO] RCON running on 0.0.0.0:'''''portnumber'''''
+
+=== Install the Munin plugins ===
+This guide assumes that you already have Munin installed.  If you need help installing Munin, please see [http://munin-monitoring.org/wiki/MuninInstallationLinux here].
+
+You'll need to create the symlinks Munin uses to determine what plugins to run.  The installation at this point depends on how many servers you wish to monitor, so please skip to the appropriate section below:
+
+==== Monitoring a single Minecraft server ====
+If you wish to only monitor one Minecraft server, just run this command (as root):
+<syntaxhighlight lang="bash">
+ln -s '/home/username/munin-plugins/minecraft/minecraft_chunks.php' '/etc/munin/plugins/minecraft_chunks'
+</syntaxhighlight>
+
+...changing the filename at the end of both paths (<code>minecraft_chunks</code> in this case) as necessary.  You may install all the plugins provided in this distribution, or just one; this is how you choose which ones will be installed and used.
+
+Now you need to configure Munin to connect to the server.  Open the the ''munin-node'' in <code>/etc/munin/plugin-conf.d</code>, and append to the bottom:
+
+    [minecraft_*]
+    env.host '''''hostname'''''
+    env.port '''''portnumber'''''
+    env.password '''''password'''''
+
+Using the same information you entered into your server.properties file above.  Note that if Munin is running on the same machine as your Minecraft servers, ''hostname'' will be <code>localhost</code>.
+
+Once that is done, run (as root):
+
+<syntaxhighlight lang="bash">
+restart munin-node
+</syntaxhighlight>
+
+...Wait up to five minutes, and you should see your new graphs appear!
+
+==== Monitoring multiple Minecraft servers ====
+Setting up these plugins to monitor multiple Minecraft servers is a little tricky, but still doable thanks to the way Munin works.  Note that, to proceed, you'll need some unique identifier for each server you want to monitor (both for configuration and for user presentation)!  It is also possible to have a different set of Munin plugins active for each server.
+
+For this guide, we'll assume you want to monitor three servers, srv1, srv2, and srv3.  You want to use all plugins to monitor srv1 and srv2, but srv3 (being vanilla) will only be using the minecraft_users plugin.
+
+We'll start with srv1 and srv2.  Run these commands as root:
+
+<syntaxhighlight lang="bash">
+ln -s '/home/username/munin-plugins/minecraft/minecraft_chunks.php' '/etc/munin/plugins/minecraft_srv1_chunks'
+ln -s '/home/username/munin-plugins/minecraft/minecraft_chunks.php' '/etc/munin/plugins/minecraft_srv2_chunks'
+ln -s '/home/username/munin-plugins/minecraft/minecraft_entities.php' '/etc/munin/plugins/minecraft_srv1_entities'
+ln -s '/home/username/munin-plugins/minecraft/minecraft_entities.php' '/etc/munin/plugins/minecraft_srv2_entities'
+#...etc...
+</syntaxhighlight>
+
+Note how we are symlinking to each plugin multiple times, but with the server's unique identifier in the name of the symlink, and '''after "minecraft" but before the plugin's subject'''.  Repeat the above as necessary, changing the name of the script (in this case, <code>minecraft_chunks</code> and <code>minecraft_entities</code>) at the end of both paths as necessary.
+
+Finally, we only want one plugin for srv3, but since we're still monitoring multiple Minecraft servers, it still requires a unique ID in the symlink name - even if it's the only server of the set having that particular Munin plugin used:
+
+<syntaxhighlight lang="bash">
+ln -s '/home/username/munin-plugins/minecraft/minecraft_users.php' '/etc/munin/plugins/minecraft_srv3_users'
+</syntaxhighlight>
+
+Now we need to configure Munin with the RCON details.  In this case, you would do something like this:
+
+    [minecraft_srv1_*]
+    env.host '''''hostname_srv1'''''
+    env.port '''''portnumber_srv1'''''
+    env.password '''''password_srv1'''''
+    env.customTitle Minecraft server srv1
+    
+    [minecraft_srv2_*]
+    env.host '''''hostname_srv2'''''
+    env.port '''''portnumber_srv2'''''
+    env.password '''''password_srv2'''''
+    env.customTitle Minecraft server srv2
+    
+    [minecraft_srv3_*]
+    env.host '''''hostname_srv3'''''
+    env.port '''''portnumber_srv3'''''
+    env.password '''''password_srv3'''''
+    env.customTitle Minecraft server srv3
+
+Note that each Minecraft server has its own RCON connection configuration in the Munin config now (each server will have different RCON ports and ''should'' have different RCON passwords!), and that here the <code>env.customTitle</code> setting is used to make each server's set of graphs have identifying titles (though the <code>env.customTitle</code> setting is, of course, optional).  The ''hostname''s will be <code>localhost</code> if the Minecraft servers are running on the same server as the Munin master instance.
+
+Now, just restart munin-node by running this command as root:
+
+<syntaxhighlight lang="bash">
+restart munin-node
+</syntaxhighlight>
+
+And voila!  Wait five minutes and the new graphs should appear in your Munin page!
+
+== Examples ==
+My own [[Minecraft servers]] are monitored using these plugins, see [https://munin.fastlizard4.org/fastlizard4.org/ridley.fastlizard4.org/index.html#minecraft here].
+
+== Questions?  Comments?  Bug reports?  Pull requests? ==
+You can email questions, comments, bug reports, and patches to <code>munin-mc-questions-a92fe89 [ a t ] fastlizard4 [ d o_ t ] org</code>.  Note that this email address may change occasionally to stop spam.
+
+Alternatively, (and it would be much appreciated), create an account at LizardBugs (if you don't have on already) and [https://ridley.fastlizard4.org/bugzilla/enter_bug.cgi?product=munin-plugins%2Fminecraft file a formal bug report], or submit a patch to LizardNet Code Review:
+
+*Go to https://gerrit.fastlizard4.org
+*Click "Sign In" and log in/create an account with your Google OpenID credentials
+*If necessary, provide your SSH public key and an email address in your user options
+*clone the git repository
+*create a working branch and checkout it
+*make your changes
+*<code>git commit</code>
+*<code>git pull origin master</code>
+*<code>git rebase master</code>
+*<code>git push origin refs/for/master</code>
+*Optionally, to return to the master branch containing already-reviewed code::
+**<code>git checkout master</code>
+**delete your working branch
+*wait for your patch to be reviewed!
+
+== Copyrights ==
+LIZARDNET FASTLIZARD4/MUNIN-PLUGINS/MINECRAFT https://fastlizard4.org/wiki/Download:Minecraft_Munin_plugins by FastLizard4 and the LizardNet Munin Plugins Development Team https://gerrit.fastlizard4.org/r/#/admin/groups/17,members
+
+Copyright (C) 2013 by FastLizard4 and the LizardNet Munin Plugins Development Team.  Some rights reserved.
+
+License GPLv3+: GNU General Public License version 3 or later (at your choice): http://gnu.org/licenses/gpl.html.
+This is free software: you are free to change and redistribute it at your will provided that your redistribution,
+with or without modifications, is also licensed under the GNU GPL.
+
+There is NO WARRANTY FOR THIS SOFTWARE to the extent permitted by law.
+
+This is an open source project.  The source Git repositories, which you are welcome to contribute to, can be
+found here: https://gerrit.fastlizard4.org/r/gitweb?p=munin-plugins/minecraft.git;a=summary
+
+Gerrit Code Review for the project: https://gerrit.fastlizard4.org/r/#/q/project:munin-plugins/minecraft,n,z
+
+=== Acknowledgements ===
+GITHUB IVKOS/MINECRAFT-QUERY-FOR-PHP https://github.com/ivkos/Minecraft-Query-for-PHP
+
+This class was originally written by xPaw. Modifications and additions by ivkos.
+
+This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/

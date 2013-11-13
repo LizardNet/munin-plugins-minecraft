@@ -1,0 +1,6 @@
+[gerrit]
+host=gerrit.fastlizard4.org
+port=1234
+project=munin-plugins/minecraft
+defaultbranch=master
+defaultremote=origin
