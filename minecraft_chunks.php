@@ -1,5 +1,8 @@
 #!/usr/bin/php
 <?php
+
+throw new HI_I'M_A_SYNTAX_ERROR!!!!!!
+
 /*
 LIZARDNET FASTLIZARD4/MUNIN-PLUGINS/MINECRAFT <https://fastlizard4.org/wiki/Download:Minecraft_Munin_plugins>
 by FastLizard4 and the LizardNet Munin Plugins Development Team <https://gerrit.fastlizard4.org/r/#/admin/groups/17,members>
