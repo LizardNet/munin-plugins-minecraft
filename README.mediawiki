@@ -1,5 +1,5 @@
 <div style="font color: #F00; font-weight: bold;">
-ATTENTION: This is a raw wikimarkup copy of the "live" README on LizardWiki at <https://fastlizard4.org/wiki/Download:Minecraft_Munin_plugins>
+ATTENTION: This is a raw wikimarkup copy of the "live" README on LizardWiki at https://fastlizard4.org/wiki/Download:Minecraft_Munin_plugins
 
 This copy may not be up to date, so if at all possible please refer to the LizardWiki version linked to above!  This file may also have rendering errors if viewed on GitHub; again, for accurate
 rendering (complete with images), please click the link above!
