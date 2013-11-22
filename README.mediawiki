@@ -1,23 +1,32 @@
-<!--
-
+<div style="font color: #F00; font-weight: bold;">
 ATTENTION: This is a raw wikimarkup copy of the "live" README on LizardWiki at <https://fastlizard4.org/wiki/Download:Minecraft_Munin_plugins>
 
-This copy may not be up to date, so if at all possible please refer to the LizardWiki version linked to above!
+This copy may not be up to date, so if at all possible please refer to the LizardWiki version linked to above!  This file may also have rendering errors if viewed on GitHub; again, for accurate
+rendering (complete with images), please click the link above!
 
-For copyright information, please open the COPYRIGHT file.
-
--->
+For copyright and licensing information, please open the LICENSE file.
+</div>
 
 '''LIZARDNET FASTLIZARD4/MUNIN-PLUGINS/MINECRAFT - A set of RRDTool/Munin plugins written in PHP to graph various statistics regarding a Minecraft server.'''
 
+[[File:Minecraft Munin plugins demo.png|thumb|right|600px|Some captured graphs from my own Minecraft servers utilizing these plugins (click to enlarge)]]
 __TOC__
+{{-}}
 
-== Git Download and Source Code ==
+== Git, Download, and Source Code ==
+*[[File:Git icon.svg|20px|link=]] '''Clone with Git (Gerrit): <code>git clone https://gerrit.fastlizard4.org/r/p/munin-plugins/minecraft.git</code>'''
+*[[File:Jenkins logo.svg|20px|link=]] '''Jenkins Tests: [https://integration.fastlizard4.org/jenkins/job/munin-plugins-minecraft%20tests/ integration.fastlizard4.org] | Status (including experimental, unmerged patchsets awaiting code review): <htmlet>buildstatus.munin-plugins-minecraft</htmlet>'''
+
 *[https://git.fastlizard4.org/gitblit/summary/?r=munin-plugins/minecraft.git Repository summary]
 *[https://git.fastlizard4.org/gitblit/tree/?r=munin-plugins/minecraft.git Source tree]
 *[https://git.fastlizard4.org/gitblit/tags/?r=munin-plugins/minecraft.git Tagged releases]
 *[https://gerrit.fastlizard4.org/r/#/q/project:munin-plugins/minecraft,n,z ''Commits awaiting code review (pull requests)'']
 *[https://ridley.fastlizard4.org/bugzilla/buglist.cgi?product=munin-plugins%2Fminecraft&component=%28not%20applicable%29&resolution=---&list_id=6 ''Currently open bug reports'']
+
+=== GitHub Mirroring ===
+A '''read-only''' mirror of the LizardNet Gerrit project is available on GitHub.  Pull requests and issue reports are accepted there, however they will be only acted on in Gerrit (in the case of pull requests, they will be converted into patches and submitted by a developer as a new patchset in Gerrit before they are acted on).  Developers with direct push access should never push directly to the GitHub repository and should instead submit their code to Gerrit.  LizardNet Continuous Integration automatically pushes all commits to the master branch on LizardNet Gerrit to GitHub when the patchset is approved and merged.
+
+*[[File:GitHub logo 2013.svg|40px|link=]] '''GitHub Mirror: [https://github.com/LizardNet/munin-plugins-minecraft LizardNet/munin-plugins-minecraft] | Mirroring status: <htmlet>buildstatus.githubmirror.munin-plugins-minecraft</htmlet>'''
 
 == Information ==
 This is a set of plugins that can be used in tandem with Munin (or RRDTool) to graph various aspects of a Minecraft server, including:
@@ -29,19 +38,37 @@ This is a set of plugins that can be used in tandem with Munin (or RRDTool) to g
 
 === Prerequisites ===
 The following prerequisites must be satisfied for using any of the plugins provided here, unless otherwise noted:
-*PHP 5.0 or above
+*PHP <abbr title="Command Line Interface">CLI</abbr> 5.0 or above
 *Minecraft server 1.0 or later
-*''For minecraft_chunks.php, minecraft_entities.php, minecraft_lag.php, and minecraft_memory.php'': [http://bukkit.org CraftBukkit] version 1.0 or later '''and''' the [http://dev.bukkit.org/bukkit-plugins/lagmeter/ LagMeter plugin] for CraftBukkit
+*''For minecraft_chunks.php, minecraft_entities.php, minecraft_lag.php, and minecraft_memory.php'': [http://bukkit.org CraftBukkit] version 1.0 or later ('''instead of''' the vanilla Minecraft server) '''and''' the [http://dev.bukkit.org/bukkit-plugins/lagmeter/ LagMeter plugin] for CraftBukkit
 *RCON must be enabled in your Minecraft server configuration (instructions for doing this below)
 
 == Downloading ==
+=== Directly ===
+These plugins can be downloaded in the archive format of your choice.  See the bolded links [[#Git, Download, and Source Code|above]].
+
+=== From Git ===
 These plugins can be found on the LizardNet Git repositories.  Run:
 
 <syntaxhighlight lang="bash">
-$ git clone https://gerrit.fastlizard4.org/r/p/munin-plugins/minecraft.git
+# Anonymous HTTPS clone
+git clone https://gerrit.fastlizard4.org/r/p/munin-plugins/minecraft.git
+# ...Or if you have an account on LizardNet Gerrit and have configured in it your SSH public key:
+git clone ssh://$GERRIT_USERNAME@gerrit.fastlizard4.org:1234/munin-plugins/minecraft.git
 </syntaxhighlight>
 
-To automatically clone the Git repository to your computer.  For the rest of these instructions, we'll assume that you've cloned this repository into the folder <code>/home/''username''/munin-plugins</code>, so that your local repository root is <code>/home/''username''/munin-plugins/minecraft</code>.
+To automatically clone the Git repository to your computer.
+
+These plugins can also be cloned from the '''read only''' GitHub mirror repository.  Before you do this, though, please read the [[#GitHub Mirroring|GitHub Mirroring]] section above for important caveats.
+
+<syntaxhighlight lang="bash">
+# Clone by SSH
+git clone git@github.com:LizardNet/munin-plugins-minecraft.git
+# Clone by HTTPS
+git clone https://github.com/LizardNet/munin-plugins-minecraft.git
+</syntaxhighlight>
+
+For the rest of these instructions, we'll assume that you've cloned this repository into the folder <code>/home/''username''/munin-plugins</code>, so that your local repository root is <code>/home/''username''/munin-plugins/minecraft</code>.
 
 == Installation ==
 === Enabling Minecraft RCON ===
@@ -58,6 +85,27 @@ Minecraft uses the Source RCON protocol for administrative communication, and th
 
     [INFO] Starting remote control listener
     [INFO] RCON running on 0.0.0.0:'''''portnumber'''''
+
+=== (Required only for some components) Install and configure CraftBukkit and LagMeter ===
+If you play to use any of the plugins other than minecraft_users.php, you'll need to use the CraftBukkit server distribution to replace vanilla Minecraft and install the LagMeter plugin.  Don't worry, installing CraftBukkit is quick and easy, as it's a drop-in replacement for the vanilla Minecraft server .jar.  However, the CraftBukkit installation guide is beyond the scope of this document, so please see [http://wiki.bukkit.org/Setting_up_a_server the Bukkit wiki] for help with that.
+
+If you already use CraftBukkit, or have finished installing it, now install (if you haven't already) the [http://dev.bukkit.org/bukkit-plugins/lagmeter/ LagMeter plugin] by navigating to the <code>plugins/</code> directory of the Minecraft server and typing this command:
+
+<syntaxhighlight lang="bash">
+wget 'http://dev.bukkit.org/media/files/715/67/LagMeter.jar'
+</syntaxhighlight>
+
+''Note: The link above may occasionally change, and if it does, go to the [http://dev.bukkit.org/bukkit-plugins/lagmeter/ plugin information page] to get the most up-to-date installation information.''
+
+After you install LagMeter, restart your Minecraft server.
+
+Now, regardless of whether you've just installed LagMeter or have previously had it installed, stop your CraftBukkit server as some configuration changes now need to be made in LagMeter:
+
+*Open the <code>plugins/LagMeter/settings.yml</code> file in your CraftBukkit server directory
+*Ensure that <code>useAverage</code> under ''General'' at the top of the file is set to <code>'''true'''</code> (this is the default).
+*Go down to the ''Commands'' section of the config file
+*Set both <code>Commands.Lag.displayEntities</code> and <code>Commands.Lag.displayChunks</code> to <code>'''true'''</code> (changing the values from the default).
+*Save the file, exit your text editor, and start CraftBukkit
 
 === Install the Munin plugins ===
 This guide assumes that you already have Munin installed.  If you need help installing Munin, please see [http://munin-monitoring.org/wiki/MuninInstallationLinux here].
@@ -79,7 +127,7 @@ Now you need to configure Munin to connect to the server.  Open the the ''munin-
     env.port '''''portnumber'''''
     env.password '''''password'''''
 
-Using the same information you entered into your server.properties file above.  Note that if Munin is running on the same machine as your Minecraft servers, ''hostname'' will be <code>localhost</code>.
+Using the same information you entered into your server.properties file above.  In almost all circumstances, ''hostname'' will be <code>localhost</code> (the rare exception would be if Munin-Node is running on a different system from the Minecraft servers being monitored).
 
 Once that is done, run (as root):
 
@@ -132,7 +180,7 @@ Now we need to configure Munin with the RCON details.  In this case, you would d
     env.password '''''password_srv3'''''
     env.customTitle Minecraft server srv3
 
-Note that each Minecraft server has its own RCON connection configuration in the Munin config now (each server will have different RCON ports and ''should'' have different RCON passwords!), and that here the <code>env.customTitle</code> setting is used to make each server's set of graphs have identifying titles (though the <code>env.customTitle</code> setting is, of course, optional).  The ''hostname''s will be <code>localhost</code> if the Minecraft servers are running on the same server as the Munin master instance.
+Note that each Minecraft server has its own RCON connection configuration in the Munin config now (each server will have different RCON ports and ''should'' have different RCON passwords!), and that here the <code>env.customTitle</code> setting is used to make each server's set of graphs have identifying titles (though the <code>env.customTitle</code> setting is, of course, optional).  The ''hostname''s will be <code>localhost</code> if the Minecraft servers are running on the same server as the Munin-Node instance - i.e., almost always.
 
 Now, just restart munin-node by running this command as root:
 
