@@ -29,6 +29,8 @@ dataPlz() is called by all Munin plugins in this repository.
 
 require_once('minecraftRcon.class.php');
 
+blah();
+
 function dataPlz($command = "lmp") {
 
 	$host = ((empty($_ENV['host'])) ? "localhost" : $_ENV['host']);
