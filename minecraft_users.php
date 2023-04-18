@@ -30,7 +30,7 @@ $data = dataPlz("list");
 
 $res = array();
 
-if($argv[1] == "config") {
+if ($argv[1] == "config") {
 	echo "graph_title " . ((empty($_ENV['customTitle'])) ? "Minecraft Users" : $_ENV['customTitle'] . " Users") . "\n";
 	echo "graph_vlabel Users\n";
 	echo "graph_category minecraft\n";
@@ -39,7 +39,13 @@ if($argv[1] == "config") {
 	die();
 }
 
-if(preg_match('/There are ([0-9]+)\/([0-9]+) players online:/', $data, $matches)) {
+if (preg_match('/There are ([0-9]+)\/([0-9]+) players online:/', $data, $matches)) {
+	$users = str_replace(',', '', $matches[1]);
+	$maxusers = str_replace(',', '', $matches[2]);
+
+	echo "users.value {$users}\n";
+	echo "maxusers.value {$maxusers}\n";
+} elseif (preg_match('/There are ([0-9]+) of a max of ([0-9]+) players online:/', $data, $matches)) {
 	$users = str_replace(',', '', $matches[1]);
 	$maxusers = str_replace(',', '', $matches[2]);
 

@@ -29,28 +29,36 @@ the target TPS of a server.
 */
 
 require_once("busybody.php");
-$data = dataPlz();
-
-$res = array();
 
 if($argv[1] == "config") {
 	echo "graph_title " . ((empty($_ENV['customTitle'])) ? "Minecraft Server Lag" : $_ENV['customTitle'] . " Server Lag") . "\n";
 	echo "graph_vlabel Ticks per second (TPS)\n";
 	echo "graph_category minecraft\n";
-	echo "tps.label Actual TPS\n";
+	echo "tps.label Actual TPS (1-minute average)\n";
 	echo "tps.colour ff0000\n";
 	echo "normal.label Normal TPS\n";
 	echo "normal.colour 0fc20f\n";
 	die();
 }
 
-if(preg_match('/\[[#_]+\] ([0-9,.]+) TPS/', $data, $matches)) {
+$data = dataPlz();
+
+if (preg_match('/\[[#_]+] ([0-9,.]+) TPS/', $data, $matches)) {
 	$tps = str_replace(',', '', $matches[1]);
 
 	echo "tps.value {$tps}\n";
 	echo "normal.value 20.00\n";
 } else {
-	echo "Error reading RCON data!\n";
-	exit(1);
+	$data = $data = dataPlz("tps");
+
+	if (preg_match('/TPS from last 1m, 5m, 15m: ([0-9.]+), ([0-9.]+), ([0-9.]+)/', $data, $matches)) {
+		$tps = str_replace(',', '', $matches[1]);
+
+		echo "tps.value {$tps}\n";
+		echo "normal.value 20.00\n";
+	} else {
+		echo "Error reading RCON data!\n";
+		exit(1);
+	}
 }
 ?>
