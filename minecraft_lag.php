@@ -49,7 +49,8 @@ if (preg_match('/\[[#_]+] ([0-9,.]+) TPS/', $data, $matches)) {
 	echo "tps.value {$tps}\n";
 	echo "normal.value 20.00\n";
 } else {
-	$data = $data = dataPlz("tps");
+	$data = dataPlz("tps");
+	$data = preg_replace('/§./', '', $data);
 
 	if (preg_match('/TPS from last 1m, 5m, 15m: ([0-9.]+), ([0-9.]+), ([0-9.]+)/', $data, $matches)) {
 		$tps = str_replace(',', '', $matches[1]);
