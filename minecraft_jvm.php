@@ -40,7 +40,7 @@ at <http://bukkit.org>, and LagMeter can be downloaded at <http://dev.bukkit.org
 
 if ($argv[1] == "config") {
     echo "graph_args --base 1024 -l 0\n";
-    echo "graph_title " . ((empty($_ENV['customTitle'])) ? "Minecraft JVM Heap Info" : $_ENV['customTitle'] . " JVM Heap Info") . "\n";
+    echo "graph_title " . ((empty($_ENV['customTitle'])) ? "Minecraft JVM Memory" : $_ENV['customTitle'] . " JVM Memory") . "\n";
     echo "graph_vlabel Bytes (B)\n";
     echo "graph_category minecraft\n";
 
@@ -48,33 +48,43 @@ if ($argv[1] == "config") {
     echo "metaspace_class_used.label Class space used\n";
     echo "metaspace_class_used.draw AREASTACK\n";
     echo "metaspace_class_used.info Portion of metaspace used for classes\n";
+    echo "metaspace_class_used.colour f58484\n";
     echo "metaspace_used.label Other metaspace used\n";
     echo "metaspace_used.draw AREASTACK\n";
     echo "metaspace_used.info Other metaspace used, excluding class space\n";
+    echo "metaspace_used.colour ff0000\n";
     echo "metaspace_class_committed.label Class space committed\n";
     echo "metaspace_class_committed.draw AREASTACK\n";
     echo "metaspace_class_committed.info Portion of metaspace committed for classes but not used\n";
+    echo "metaspace_class_committed.colour ffcc00\n";
     echo "metaspace_committed.label Other metaspace committed\n";
     echo "metaspace_committed.draw AREASTACK\n";
     echo "metaspace_committed.info Other metaspace committed but not used, excluding class space\n";
+    echo "metaspace_committed.colour ff8000\n";
     echo "metaspace_class_reserved.label Class space reserved\n";
     echo "metaspace_class_reserved.draw AREASTACK\n";
     echo "metaspace_class_reserved.info Portion of metaspace reserved for classes but not committed\n";
+    echo "metaspace_class_reserved.colour 990099\n";
     echo "metaspace_reserved.label Other metaspace reserved\n";
     echo "metaspace_reserved.draw AREASTACK\n";
     echo "metaspace_reserved.info Other metaspace reserved but not committed, excluding class space\n";
+    echo "metaspace_reserved.colour 330099\n";
     echo "heap_young.label Young heap\n";
     echo "heap_young.draw AREASTACK\n";
     echo "heap_young.info Young generation region of the heap\n";
+    echo "heap_young.colour 00cc00\n";
     echo "heap_survivor.label Survivor heap\n";
     echo "heap_survivor.draw AREASTACK\n";
     echo "heap_survivor.info Survivor generation region of the heap\n";
+    echo "heap_survivor.colour 84c4f5\n";
     echo "heap_used.label Other used heap\n";
     echo "heap_used.draw AREASTACK\n";
     echo "heap_used.info Other used heap memory, excluding the young and survivor regions\n";
+    echo "heap_used.colour 0066b3\n";
     echo "heap_free.label Free heap\n";
     echo "heap_free.draw AREASTACK\n";
     echo "heap_free.info Unused but allocated heap memory\n";
+    echo "heap_free.colour ccff00\n";
     die();
 }
 
